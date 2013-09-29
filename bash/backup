@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#: Title			: backup
+#: Date				: July 2013
+#: Author			: Keith Edwards (GLLUG), Moggers87, and Sharon Kimble.
+#: Version			: 5.6
+#: Description		: Backs up and retains a certain number of days worth\ before deleting them in a cycle. Works with rsync from the users crontab.
+#: Options			: Nine options, all shown under '# Variables'.
+#: License			: GNU GPL 3.0 or later
+####################################################
+# CHANGELOG.
+# v5.5 [30-6-2013]
+# Added in LOG_FILE.
+# Released under GNU GPL 3.
+# v5.6 [8-7-2013]
+# Changed 'USB_DIR' to reflect the change in saving of files on Debian and Thunar
+# removed '--exclude-from '/home/boudiccas/cron/xclude.txt' \' as no longer needed.
+####################################################
+# Variables
+HOME_DIR="/home/boudiccas/cron"
+USB_DIR="/media/backup/back/cron"
+BACKUP_DIR="$USB_DIR/$(/bin/date +%Y%m%d)"
+EMAIL="boudiccas@debian.london"
+SUBJECT="Backup Error"
+EMAIL_MESSAGE="Couldn't find $USB_DIR, are you sure its plugged in or mounted?"
+NUM_LEFT="14" #number of days backups to hold
+LOG_FILE="/home/boudiccas/cron/backup.txt"
+####################################################
+# Don't change anything after here.
+
+# Check if rsync still running
+if pgrep -f 'rsync.*/home/'; then echo "E: old rsync still running" 1>&2; exit 1; fi
+
+# Backup files
+if [ -d $HOME_DIR ] & [ -d $USB_DIR ]; then
+   [ -d $BACKUP_DIR ] || mkdir $BACKUP_DIR \
+   >> $LOG_FILE 2>&1
+   /usr/bin/rsync  -avzP /home/boudiccas/cron $BACKUP_DIR \
+   >>$LOG_FILE 2>&1
+   
+   # Delete those old backups! Yeah!
+   (find $USB_DIR -maxdepth 1 -type d -name "20*" | sort | tail -n $NUM_LEFT; \
+   find $USB_DIR -maxdepth 1 -type d -name "20*") | \
+   sort | uniq -u | xargs -n1 rm -rf \
+   >>$LOG_FILE 2>&1
+else
+   # Send an email
+   /bin/mail -s "$SUBJECT" "$EMAIL" < "$EMAIL_MESSAGE"
+   
+   #kill all unwanted rsync programmes
+   /usr/bin/killall rsync
+   
+echo 'backup finished', $BACKUP_DIR
+
+fi
