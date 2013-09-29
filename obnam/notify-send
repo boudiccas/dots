@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+####################################################
+# Variables
+LOGFILE="/home/boudiccas/logs/obnam.txt"
+LOGGING2="/home/boudiccas/logs/du.txt"
+CONF="/home/boudiccas/cron/conf/obnam.conf"
+####################################################
+
+# Log all stdout+stderr 
+exec > >(tee -a /home/boudiccas/logs/obnam.txt) 2>&1
+
+notify-send "Starting main backup..."
+
+obnam --config=$CONF backup
+
+if [ "$?" -ne 0 ]; then
+  notify-send "Unable to finish main backup."
+  exit 1
+else
+  notify-send "Finished main backup."
+  
+  du -sh /media/backup/obnam-home
+    
+echo 'Sending Backup report : Backup of obnam-home completed', $(date -R) 'logged to' $LOGFILE
+echo '####################################'
+
+fi
