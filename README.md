@@ -4,6 +4,8 @@ Further information and documentation about these files can be obtained at [my b
 
 **/bash** = various bash scripts.<br /> 
 **/emacs** = various emacs files<br />
-**/obnam** = files relating to my backup system, obnam.
+**/obnam** = files relating to my backup system, obnam.<br />
+**/programmes** = programmes that I'm hosting here in case it goes missing from the internet.
 
- Sharon Kimble. 29 September 2013.
+ Sharon Kimble. <br />
+ 27 October 2013.
