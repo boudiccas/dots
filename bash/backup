@@ -3,7 +3,7 @@
 #: Date				: July 2013
 #: Author			: Keith Edwards (GLLUG), Moggers87, and Sharon Kimble.
 #: Version			: 5.6
-#: Description		: Backs up and retains a certain number of days worth\ before deleting them in a cycle. Works with rsync from the users crontab.
+#: Description			: Backs up and retains a certain number of days worth before deleting them in a cycle. Works with rsync from the users crontab.
 #: Options			: Nine options, all shown under '# Variables'.
 #: License			: GNU GPL 3.0 or later
 ####################################################
@@ -14,16 +14,18 @@
 # v5.6 [8-7-2013]
 # Changed 'USB_DIR' to reflect the change in saving of files on Debian and Thunar
 # removed '--exclude-from '/home/boudiccas/cron/xclude.txt' \' as no longer needed.
+# v5.7 [28-10-2013]
+# Added in $user name into file path to conform with xfce requirements.
 ####################################################
 # Variables
-HOME_DIR="/home/boudiccas/cron"
-USB_DIR="/media/backup/back/cron"
-BACKUP_DIR="$USB_DIR/$(/bin/date +%Y%m%d)"
-EMAIL="boudiccas@debian.london"
-SUBJECT="Backup Error"
-EMAIL_MESSAGE="Couldn't find $USB_DIR, are you sure its plugged in or mounted?"
-NUM_LEFT="14" #number of days backups to hold
-LOG_FILE="/home/boudiccas/cron/backup.txt"
+home_dir="/home/boudiccas/cron"
+usb_dir="/media/boudiccas/backup/back/cron"
+backup_dir="$usb_dir/$(/bin/date +%Y%m%d)"
+email="boudiccas@localhost"
+subject="Backup Error"
+email_message="Couldn't find $usb_dir, are you sure its plugged in or mounted?"
+num_left="14" #number of days backups to hold
+log_file="/home/boudiccas/logs/backup.txt"
 ####################################################
 # Don't change anything after here.
 
@@ -31,24 +33,24 @@ LOG_FILE="/home/boudiccas/cron/backup.txt"
 if pgrep -f 'rsync.*/home/'; then echo "E: old rsync still running" 1>&2; exit 1; fi
 
 # Backup files
-if [ -d $HOME_DIR ] & [ -d $USB_DIR ]; then
-   [ -d $BACKUP_DIR ] || mkdir $BACKUP_DIR \
-   >> $LOG_FILE 2>&1
-   /usr/bin/rsync  -avzP /home/boudiccas/cron $BACKUP_DIR \
-   >>$LOG_FILE 2>&1
+if [ -d $home_dir ] & [ -d $usb_dir ]; then
+   [ -d $backup_dir ] || mkdir $backup_dir \
+   >> $log_file 2>&1
+   /usr/bin/rsync  -avzP /home/boudiccas/cron $backup_dir \
+   >>$log_file 2>&1
    
    # Delete those old backups! Yeah!
-   (find $USB_DIR -maxdepth 1 -type d -name "20*" | sort | tail -n $NUM_LEFT; \
-   find $USB_DIR -maxdepth 1 -type d -name "20*") | \
+   (find $usb_dir -maxdepth 1 -type d -name "20*" | sort | tail -n $num_left; \
+   find $usb_dir -maxdepth 1 -type d -name "20*") | \
    sort | uniq -u | xargs -n1 rm -rf \
-   >>$LOG_FILE 2>&1
+   >>$log_file 2>&1
 else
    # Send an email
-   /bin/mail -s "$SUBJECT" "$EMAIL" < "$EMAIL_MESSAGE"
+   /bin/mail -s "$subject" "$email" < "$email_message"
    
    #kill all unwanted rsync programmes
    /usr/bin/killall rsync
    
-echo 'backup finished', $BACKUP_DIR
+echo 'backup finished', $backup_dir
 
 fi
