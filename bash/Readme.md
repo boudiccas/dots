@@ -4,5 +4,5 @@ My various bash scripts that I've written or amended.
 **reinstall** = a reinstall script to help doing a restore.<br />
 **reinstall-ubuntu** = the reinstall script amended to be used with ubuntu, not tested.
 
-Sharon Kimble.
+Sharon Kimble.<br />
 November 2013.
