@@ -1,0 +1,166 @@
+#!/bin/bash
+#: Title			: reinstall-ubuntu
+#: Date				: October 2013
+#: Author			: Wayno Guerrini@www.pkill-9.com, Markus Kalb http://www.markus-kalb.de
+#: Version			: 1.5
+#: Description			: to give the ability to reinstall ubuntu much faster
+#: Options			: many, all prefixed with 'doit '
+#: License			: GNU GPL 3.0 or later
+####################################################
+
+# quit does any processing before returning back from the script.
+# here we are just exiting.
+#
+function quit {
+exit
+}
+ 
+function doit {
+ 
+#echo back to the terminal what we are trying to install
+
+printf '\n'
+echo 'installing: ' $1 $2
+printf '\n'
+
+sudo apt-fast -y install $1
+ 
+# $? is the return code from the previous command in this case the
+# apt-get
+ 
+retval=$?
+ 
+# check the return code from the apt-get if it's okay, continue on,
+# if it's not zero, tell me the return code, but continue on
+ 
+if [ $retval -ne 0 ] ; then
+echo '&gt;&gt;&gt;&gt;&gt;failed rc =' $retval
+fi
+ 
+}
+
+function removeit {
+
+#echo back to the terminal what we are trying to remove 
+#
+
+printf '\n'
+echo 'removing : ' $1 $2
+printf '\n'
+sudo apt-get remove  $1
+
+# $? is the return code from the previous command in this case the
+# apt-get
+
+retval=$?
+
+# check the return code from the apt-get if it's okay, continue on,
+# if it's not zero, tell me the return code, but continue on
+
+if [ $retval -ne 0 ] ; then
+echo '&gt;&gt;&gt;&gt;&gt;failed rc =' $retval
+fi
+
+}
+
+function addppa {
+
+#echo back to the terminal what we are trying to install
+#
+
+printf '\n'
+echo 'adding ppa: ' $1 $2
+printf '\n'
+sudo add-apt-repository -y  $1
+
+# $? is the return code from the previous command in this case the
+# apt-get
+
+retval=$?
+
+# check the return code from the apt-get if it's okay, continue on,
+# if it's not zero, tell me the return code, but continue on
+
+if [ $retval -ne 0 ] ; then
+echo '&gt;&gt;&gt;&gt;&gt;failed rc =' $retval
+fi
+
+}
+
+# adding apt-fast repo and installing it without using 
+# new apt-fast based "doit". Better would be to change 
+# "doit" to only use apt-fast if it is present! TODO
+#
+addppa ppa:apt-fast/stable
+
+## doing one apt-get update after all addppa
+sudo apt-get update -y 
+
+### getting the needed apt-fast 
+sudo apt-get -y install apt-fast 
+
+# okay re-install all the programmes after a fresh install -- note,
+# if you don't want it, comment it out with a # in front
+ 
+doit rsync
+doit ssh 
+doit tmux
+doit autossh 
+doit synapse
+#doit gtkrsync
+#doit ntp
+#doit vnstat
+#doit mpd
+#doit mpc
+#doit ncmpcpp
+#doit lxde
+#doit deluge
+doit zim
+#doit clipit
+#doit claws-mail
+#doit chronicle
+#doit firestarter
+#doit grsync
+#doit i3lock
+#doit gpodder
+#doit conky
+#doit xpad
+doit chromium-browser
+doit krusader
+doit numlockx
+#doit lightdm
+#doit lightdm-gtk-greeter
+#doit lxlauncher
+#doit logwatch
+#doit bluefish
+#doit pidgin
+#doit gwhere
+#doit uptimed
+#doit lxtask
+#doit xfmpc
+#doit claws-mail
+#doit claws-mail-plugins
+#doit claws-mail-extra-plugins
+#doit claws-mail-themes
+#doit xpad
+doit vlc
+#doit claws-mail-themes
+#doit xchat
+#doit xfmpc
+doit clementine
+doit pdfchain
+#doit downtimed
+doit texmaker 
+doit gummi
+doit gedit-plugins
+doit pdftk 
+
+#remove some stuff
+removeit tracker
+removeit overlay-scrollbar
+
+## last but not least get the updates since last install iso was created
+sudo apt-get dist-upgrade -y
+
+# and we are done!
+quit
