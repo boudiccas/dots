@@ -1,6 +1,6 @@
 My various obnam files.
 
-**notify** = my 'push' file, called from $USERS cron, that initiates the backup of /home<br />
+**notify2.2** = my 'push' file, called from $USERS cron, that initiates the backup of /home<br />
 **obnam.conf** = my $USER configuration file<br />
 **baksize** = my script to show the size of my backup directory sizes in 'conky'
 
