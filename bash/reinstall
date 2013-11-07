@@ -1,14 +1,14 @@
-#!/usr/bin/env bash
-#
-# simple bash script to re-install all the programmes after a fresh
-#install for debian
-#
-# Wayno Guerrini v1.0
-# www.pkill-9.com
-     
+#!/bin/bash
+#: Title			: reinstall
+#: Date				: January 2013
+#: Author			: Wayno Guerrini www.pkill-9.com
+#: Version			: 1.0
+#: Description			: simple bash script to re-install all the programmes after a fresh install for debian
+#: License			: GNU GPL 2.0 or later
+################################################
 # quit does any processing before returning back from the script.
 # here we are just exiting.
-#
+
     function quit {
     exit
     }
@@ -16,7 +16,6 @@
     function doit {
      
 #echo back to the terminal what we are trying to install
-#
      
     printf '\n'
     echo 'installing: ' $1 $2
@@ -36,11 +35,10 @@
     fi
      
     }
-#
+
 # okay re-install all the programmes after a fresh install -- note,
 # if you don't want it, comment it out with a # in front
-#
-     
+   
 doit rsync
 doit gtkrsync
 doit ntp

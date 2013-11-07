@@ -1,7 +1,7 @@
 #!/bin/bash
 #: Title			: reinstall-ubuntu
 #: Date				: October 2013
-#: Author			: Wayno Guerrini@www.pkill-9.com, Markus Kalb http://www.markus-kalb.de
+#: Author			: Wayno Guerrini www.pkill-9.com, Markus Kalb http://www.markus-kalb.de
 #: Version			: 1.5
 #: Description			: to give the ability to reinstall ubuntu much faster
 #: Options			: many, all prefixed with 'doit '
