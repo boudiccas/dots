@@ -1,9 +1,8 @@
-#!/usr/bin/env bash
-#set -e
-#: Title			: unlock
+#!/bin/bash
+#: Title				: unlock
 #: Date				: November 2013
-#: Author			: Sharon Kimble
-#: Version			: 2.0
+#: Author				: Sharon Kimble
+#: Version			: 2.1
 #: Description			: to remove all 'lock' files from my obnam backup files
 #: Options			: 8, as listed in variables
 #: License			: GNU GPL 3.0 or later
