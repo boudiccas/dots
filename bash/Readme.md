@@ -4,7 +4,8 @@ My various bash scripts that I've written or amended.
 **'reinstall'-v1.0** = a reinstall script to help doing a restore.<br />
 **'reinstall-ubuntu'-v1.5** = the reinstall script amended to be used with ubuntu, not tested.<br />
 **'show'-v2.0** = a script to see a description of a file, whether its installed or not, and what repo its in.<br />
-**'want'-v1.0** = a script to search the apt-cache, show you one chosen programme, gives you the option of installing it, and then gives you the option of updating the universal database.
+**'want'-v1.0** = a script to search the apt-cache, show you one chosen programme, gives you the option of installing it, and then gives you the option of updating the universal database.<br />
+**'fluxwant'-v2.0** = the same as 'want' but with the opportunity to create a new fluxbox menu.
 
 To use these scripts, download the one/s you want to use, and save them to '/home/$USER/bin/' and make the $PATH executable. To do this, put <br />
 PATH=$PATH:~/bin;<br />

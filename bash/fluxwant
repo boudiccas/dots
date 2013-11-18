@@ -1,0 +1,69 @@
+#!/bin/bash
+#: Title	        	: fluxwant
+#: Date				: November 2013
+#: Author		        : Sharon Kimble
+#: Version			: 2.0
+#: Times edited			: 11
+#: Description			: to easily show a list of programmes, choose one and install it, and then update the 'universal database'
+#: Options			: 1, all listed in variables
+#; Requirements			: menumaker-0.99.7.tar.gz, in the /programmes directory
+#: License			: GNU GPL 3.0 or later
+####################################################
+# Changelog.
+# * 17-11-13 - initial version of the script,
+# logs output, added ability to install, and update
+# the universal database.
+# * 18-11-13 - added the ability to generate a fluxbox menu.
+####################################################
+# Variables
+logfile="/home/boudiccas/logs/want.txt"
+####################################################
+exec > >(tee -a $logfile) 2>&1
+
+# Searches the apt-cache
+echo "What programmes would you like to see? One word answer please!"
+echo
+read programme
+echo
+apt-cache search "$programme"
+echo
+
+# Uses apt-cache policy to show info regarding one programme
+echo "What programme do you want to see more information of?"
+echo
+read programme
+echo
+apt-cache show "$programme" | grep -i description -A 8
+
+apt-cache policy "$programme"	#shows whether installed or not, and repo of it.
+
+# Install it?
+echo 
+{	
+	read -p "Do you want to install this programme? " yn
+    case $yn in
+        [Yy]* ) sudo apt-get install "$programme";; 
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no. ";;
+    esac
+}
+
+# use updatedb
+echo
+{    read -p "Do you want to update the universal database? " yn
+   case $yn in
+        [Yy]* ) sudo updatedb;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no. ";;
+    esac
+}
+
+echo
+{    read -p "Do you want to update the fluxbox menu? " yn
+   case $yn in
+        [Yy]* ) mv ~/.fluxbox/menu ~/.fluxbox/menu-$(/bin/date +%Y%m%d-%R); mmaker fluxbox -f;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no. ";;
+    esac
+}
+exit
