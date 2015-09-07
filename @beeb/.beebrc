@@ -1,0 +1,6 @@
+# Variables for 'beeb'
+
+tvsite="/media/$USER/back2/proggies"
+music="/media/$USER/back4/Music"
+radiosite="/media/$USER/back4/Music/beeb-radio/"
+beebradio="/home/$USER/.mpd/playlists/beeb-radio.m3u"

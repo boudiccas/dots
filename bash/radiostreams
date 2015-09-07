@@ -1,0 +1,79 @@
+#!/bin/bash
+# set -x
+#: Title			: radiostreams
+#: Date		    	: February 2014
+#: Author			: Sharon Kimble
+#: Version			: 2.0
+#: Description		: to give a comprehensive set of MPD radio stations
+
+# Copyright (C) 2014  Sharon Kimble
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+####################################################
+# Changelog.
+# * 08-02-2014 - v2.0 - Enlarged the list of radio streaming sites
+####################################################
+# Variables
+playlistdir="/home/$USER/.mpd/playlists"
+####################################################
+
+declare -A radios
+radios["BBC Radio 4"]="http://www.bbc.co.uk/radio/listen/live/r4_aaclca.pls"
+radios["BBC 6 Music"]="http://www.bbc.co.uk/radio/listen/live/r6_aaclca.pls"
+radios["BBC Radio 2"]="http://www.bbc.co.uk/radio/listen/live/r2_aaclca.pls"
+radios["BBC Radio 4 Extra"]="http://www.bbc.co.uk/radio/listen/live/r4x_aaclca.pls"
+radios["BBC Radio 4 longwave"]="http://www.bbc.co.uk/radio/listen/live/r4lw_aaclca.pls"
+radios["BBC Radio 5 live"]="http://www.bbc.co.uk/radio/listen/live/r5l_aaclca.pls"
+radios["BBC Radio 1"]="http://www.bbc.co.uk/radio/listen/live/r1_aaclca.pls"
+radios["Irelands Kiss FM"]="http://uk1.internet-radio.com:15476/listen.pls"
+radios["Amazing smooth and jazz"]="http://uk1.internet-radio.com:4086/listen.pls"
+radios["Ambient chillout"]="http://uk2.internet-radio.com:31491/listen.pls"
+radios["Champion Radio UK"]="http://uk2.internet-radio.com:31216/listen.pls"
+radios["Chillout Lounge Radio"]="http://sc-tcl.1.fm:8010/listen.pls"
+radios["181 FM - Highway 181"]="http://uplink.duplexfx.com:8018/listen.pls"
+radios["181.FM - Christmas Traditional Classics"]="http://uplink.duplexfx.com:8124/listen.pls"
+radios["North Pole Radio"]="http://ophanim.net:9790/listen.pls"
+radios["181.FM - Christmas Power - Top 40 Christmas Hits"]="http://uplink.duplexfx.com:8086/listen.pls"
+radios["Nirvana Radio - Music for Meditation and Relaxation"]="http://sc9106.xpx.pl:9106/listen.pls"
+radios["bas FM"]="http://uk2.internet-radio.com:30274/listen.pls"
+radios["Horizon Fm - Tenerife"]="http://uk1.internet-radio.com:15614/listen.pls"
+radios["Metal Express"]="http://usa7-vn.mixstream.net/listen/8248.pls"
+radios["spiritsplantsradio"]="http://streams.museter.com:2199/tunein/cenacle.pls"
+radios["Abacus FM - Goon Shows"]="http://91.121.166.38:7690/listen.pls"
+radios["Demented Radio"]="http://dementedradio.streamguys.us:8000/listen.pls"
+radios["Cabin Boy Comedy Club"]="http://majestic.wavestreamer.com:3547/listen.pls"
+radios["Kiss FM Hits"]="http://uk3.internet-radio.com:10911/listen.pls"
+radios["Stagescripts Internet Radio"]="http://uk2.internet-radio.com:30591/listen.pls"
+radios["Cool Fahrenheit 93"]="http://203.150.224.142:8003/listen.pls"
+radios["KLUX 89.5HD"]="http://s4.viastreaming.net:7610/listen.pls"
+radios["Happyday Newage Radio"]="http://222.122.131.69:8000/listen.pls"
+radios["Angel Radio"]="http://s8.viastreaming.net:7030/listen.pls"
+radios["EZ Does It Net Radio"]="http://mega6.radioserver.co.uk:8172/listen.pls"
+radios["Pinetrees"]="http://sc05.saycast.com:8280/listen.pls"
+radios["181 FM - Golden Oldies"]="http://uplink.duplexfx.com:8046/listen.pls"
+radios["Beatles Radio"]="http://www.beatlesradio.com:8088/listen.pls"
+radios["EP Express - The Elvis Presley Radio Station"]="http://s2.fastcast4u.com:9246/listen.pls"
+
+echo
+for k in "${!radios[@]}"
+do
+filepath="${playlistdir}/${k}.m3u"
+rm -f "$filepath"
+echo "#EXTM3U" >> "$filepath"
+pls=${radios[$k]}
+echo "#EXTINF:-1, BBC - $k" >> "$filepath"
+/usr/bin/curl -s $pls | grep File1 | sed 's/File1=\(.*\)/\1/' >> "$filepath"
+done

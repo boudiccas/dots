@@ -1,0 +1,25 @@
+#!/bin/bash
+#: Title			: show
+#: Date				: November 2013
+#: Author			: Sharon Kimble
+#: Version			: 2.0
+#: Times edited			: 09
+#: Description			: to easily show a description of a programme
+#: Options			: 1, all listed in variables
+#: License			: GNU GPL 3.0 or later
+####################################################
+# Changelog.
+#	* 10-11-13
+#	initial version of the script
+#	logs output.
+####################################################
+# Variables
+logfile="/home/boudiccas/logs/show.txt"
+####################################################
+exec > >(tee -a $logfile) 2>&1
+
+echo "What programme do you want to see?"
+read programme
+apt-cache show "$programme" | grep -i description -A 8
+
+apt-cache policy "$programme"	#shows whether installed or not, and repo of it.

@@ -1,0 +1,23 @@
+Changelog.
+24-01-2014
+- Initial release.
+
+25-01-2014 - v1.5
+- Changed 'beeb.conf' to '.beebrc'
+
+26-01-2014 - v2.0
+- Changed configuration to create ~/.beeb and store feeds in it.
+
+28-01-2014 - v2.5
+- Checks to see if get-iplayer/get_iplayer is installed. Then runs with
+whichever is found.
+
+06-02-2014 - v2.7
+- Updated documentation to reflect the current legal situation, as I understand it.
+
+11-02-2014 - v2.8
+- Moved mpd feed update question to just after radio programmes download, where its
+placement seems more logical.
+
+16-02-2014 - v3.0
+- Now downloads all the radio programmes as *.mp3

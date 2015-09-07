@@ -1,0 +1,193 @@
+#!/bin/bash
+set -e
+#: Title			: beeb
+#: Date		    	: February 2014
+#: Version			: 3.0
+#: Description		: To work with get-iplayer and use small scripts to download BBC programmes.
+#; Requirements		: get-iplayer
+#: Uses '.beebrc' saved at /home/$USER/.beebrc
+
+# Copyright (C) 2014  Sharon Kimble
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+####################################################
+
+function ask {
+    while true; do
+
+        if [ "${2:-}" = "Y" ]; then
+            prompt="Y/n"
+            default=Y
+        elif [ "${2:-}" = "N" ]; then
+            prompt="y/N"
+            default=N
+        else
+            prompt="y/n"
+            default=
+        fi
+
+        # Ask the question
+        read -p "$1 [$prompt] " REPLY
+
+        # Default?
+        if [ -z "$REPLY" ]; then
+            REPLY=$default
+        fi
+
+        # Check if the reply is valid
+        case "$REPLY" in
+            Y*|y*) return 0 ;;
+            N*|n*) return 1 ;;
+        esac
+
+    done
+}
+function ask2 {
+    n=$1                    # the limit on the input length (<1000)
+    if [ -z "$2" ] ; then   # the name of variable to hold the input
+       echo "Usage $0: <number> <name>";
+       return 2;
+    fi
+    result="" # temporary variable to hold the partial input
+    while $(true); do
+        printf '[%03d]> %s' "$n" "$result"
+        stty cbreak
+        REPLY=$(dd if=/dev/tty bs=1 count=1 2> /dev/null)
+        stty -cbreak
+
+        test "$REPLY" == "$(printf '\n')" && {
+             printf "\n"
+             eval "$2=\"$result\""
+             return 0
+        }
+        test "$REPLY" == "$(printf '\177')" && {
+             # On my terminal 0x7F is the erase character
+             result=${result:0:-1}
+             (( n = $n + 1 ))
+             printf "\r\033[K"
+             continue
+         }
+
+	result="${result}$REPLY"
+        (( n = $n - 1 ))
+        if [ $n -eq 0 ] ; then
+           printf "\n"
+           eval "$2=\"$result\""
+           return 1
+        fi
+        printf "\r\033[K" # to clear the line
+    done
+}
+txtbld=$(tput bold)             # Bold
+bldgrn=${txtbld}$(tput setaf 2) # green
+source ~/.beebrc
+tvfeed="/home/$USER/.beeb/beeb-tv.txt"
+radiofeed="/home/$USER/.beeb/beeb-radio.txt"
+
+if [[ -x "/usr/bin/get-iplayer" ]]
+then player="/usr/bin/get-iplayer"
+elif [[ -x "/usr/bin/get_iplayer" ]]
+then player="/usr/bin/get_iplayer"
+else echo "$0: Error: 'get-iplayer' or 'get_iplayer' is not installed. Please install it." >&2
+     exit 1
+fi
+
+if [ -d "$radiosite/touch.m4a" ]
+then
+    echo;
+else
+	touch "$radiosite"/touch.m4a; echo;
+fi
+
+if [ -d "/home/$USER/.beeb" ]
+then
+    echo ;
+else
+    echo "$(tput setaf 1) $(tput setab 7) Error: Directory /home/$USER/.beeb does not exist $(tput sgr 0)"
+		read -n1 -p ""$bldgrn" Do you want to create the '/home/$USER/.beeb' directory? [y/n/q] $(tput sgr0)" ynq
+    case "$ynq" in
+        [Yy]* ) mkdir /home/$USER/.beeb; touch "$tvfeed"; touch "$radiofeed"; echo;;
+        [Nn]* ) echo; exit;;
+		[Qq]* ) echo; exit;;
+        * ) echo ""$bldgrn" Please answer yes or no. $(tput sgr0)";;
+    esac
+fi
+
+ {
+	read -n1 -p ""$bldgrn" Do you want to update the radio feed? [y/n/q] $(tput sgr0)" ynq
+    case "$ynq" in
+        [Yy]* ) rm "$radiofeed"; eval "$player" --type radio>>"$radiofeed";;
+        [Nn]* ) echo;;
+		[Qq]* ) echo; exit;;
+        * ) echo ""$bldgrn" Please answer yes or no. $(tput sgr0)";;
+    esac
+ };
+echo;
+{
+	read -n1 -p ""$bldgrn" Do you want to download some radio programmes? [y/n/q] $(tput sgr0)" ynq ;
+    case "$ynq" in
+		[Yy]) echo
+			  echo  ""$bldgrn" Please input the radio programme numbers to download [max 200 characters] $(tput sgr0)"
+			  ask2 200 'radiobox'
+			  echo "$radiobox"
+			  echo
+			  cd "$radiosite"
+			  eval "$player" --g "$radiobox" --aactomp3; echo;;
+        [Nn]) echo;;
+		[Qq]) echo; exit;;
+        * ) echo ""$bldgrn" Thank you $(tput sgr0)";;
+    esac
+  };
+echo;
+{
+	read -n1 -p ""$bldgrn" Do you want to update the mpd feed? [y/n/q] $(tput sgr0)" ynq
+    case "$ynq" in
+        [Yy]* ) cd "$music"
+				rm "$beebradio"
+				ls -1 "$radiosite"*.{mp3,m4a} >"$beebradio"
+				echo;;
+        [Nn]* ) echo;;
+		[Qq]* ) echo; exit;;
+        * ) echo ""$bldgrn" Please answer yes or no. $(tput sgr0)";;
+    esac
+};
+echo;
+{
+	read -n1 -p ""$bldgrn" Do you want to update the tv feed? [y/n/q] $(tput sgr0)" ynq
+    case "$ynq" in
+        [Yy]* ) rm "$tvfeed"; eval "$player" --type tv>>"$tvfeed";;
+        [Nn]* ) echo;;
+		[Qq]* ) echo; exit;;
+        * ) echo ""$bldgrn" Please answer yes or no. $(tput sgr0)";;
+    esac
+ };
+echo;
+{
+	read -n1 -p ""$bldgrn" Do you want to download some tv programmes? [y/n/q] $(tput sgr0)" ynq ;
+    case "$ynq" in
+		[Yy]) echo
+			  echo ""$bldgrn" Please input the tv programme numbers to download [max 200 characters] $(tput sgr0)"
+			  ask2 200 'tvbox'
+			  echo "$tvbox"
+			  echo
+			  cd "$tvsite"
+			  eval "$player" -g "$tvbox"
+			  echo; exit;;
+        [Nn]) echo; exit;;
+		[Qq]) echo; exit;;
+        * ) echo ""$bldgrn" Thank you $(tput sgr0)";;
+    esac
+ };

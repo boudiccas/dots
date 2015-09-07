@@ -1,0 +1,16 @@
+#!/bin/bash
+#: Title			: mengen
+#: Date				: November 2013
+#: Author			: Sharon Kimble, James Morris
+#: Version			: 2.0
+#: Description			: to generate fluxbox menu plus your usermenu too
+#: Options			: none
+#: Requirements			: menumaker-0.99.7.tar.gz, in the /programmes directory
+#: License			: GNU GPL 3.0 or later
+####################################################
+# Change log 
+# * 23-11-13 - Initial release
+# * 25-11-13 - added ability to remove xscreensaver entries from "Others"
+################################################### 
+
+mv ~/.fluxbox/menu{,-$(date +%Y%m%d-%R)}; mmaker fluxbox -f; sed -i '\|\[exec[]]\s[(].*[)]\s[{]/usr/lib/xscreensaver/.*\s-root[}]|d' ~/.fluxbox/menu; sed -i '\|\[exec[]]\s[(].*[)]\s[{]\b\(xscreensaver\).*[}]|d' ~/.fluxbox/menu; perl -0777 -pi -e 's/(.*)\[end]/$1/s;s/(.*)\[end]/$1/s;s/^\s*\n//gm' ~/.fluxbox/menu; printf '\t[end]\n\t[separator]\n\t[submenu] (My Menu)\n\t[include] (~/.fluxbox/usermenu)\n\t[end]\n\t[end]' >>~/.fluxbox/menu

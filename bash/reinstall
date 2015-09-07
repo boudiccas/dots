@@ -1,0 +1,93 @@
+#!/bin/bash
+#: Title			: reinstall
+#: Date				: January 2013
+#: Author			: Wayno Guerrini www.pkill-9.com
+#: Version			: 1.0
+#: Description			: simple bash script to re-install all the programmes after a fresh install for debian
+#: License			: GNU GPL 2.0 or later
+################################################
+# quit does any processing before returning back from the script.
+# here we are just exiting.
+
+    function quit {
+    exit
+    }
+     
+    function doit {
+     
+#echo back to the terminal what we are trying to install
+     
+    printf '\n'
+    echo 'installing: ' $1 $2
+    printf '\n'
+    apt-get -y install $1
+     
+# $? is the return code from the previous command in this case the
+# apt-get
+     
+    retval=$?
+     
+# check the return code from the apt-get if it's okay, continue on,
+# if it's not zero, tell me the return code, but continue on
+     
+    if [ $retval -ne 0 ] ; then
+    echo '&gt;&gt;&gt;&gt;&gt;failed rc =' $retval
+    fi
+     
+    }
+
+# okay re-install all the programmes after a fresh install -- note,
+# if you don't want it, comment it out with a # in front
+   
+doit rsync
+doit gtkrsync
+doit ntp
+doit vnstat
+doit mpd
+doit mpc
+doit ncmpcpp
+doit smplayer
+doit obnam
+doit zim
+doit clipit
+doit ffmpeg
+doit xfce4-notes
+doit mr
+doit grsync
+doit i3lock
+doit gksu
+doit conky-all
+doit iceweasel
+doit chromium
+doit get-iplayer
+doit brasero
+doit konqueror
+doit locate
+doit leafpad
+doit python-fuse
+doit numlockx
+doit gdebi
+doit ario
+doit fluxbox
+doit logwatch
+doit bluefish
+#doit 
+doit gwhere
+doit uptimed
+#doit 
+doit xfmpc
+doit claws-mail
+doit claws-mail-plugins
+doit claws-mail-extra-plugins
+doit claws-mail-themes
+#doit 
+doit vlc
+doit ffmpeg
+doit xchat
+doit xfmpc
+doit evilvte
+doit xscreensaver
+doit medit
+doit downtimed
+doit xscreensaver-data-extra
+quit
